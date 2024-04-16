@@ -4,17 +4,22 @@ import "./App.css";
 // import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Routes, Route } from "react-router-dom";
-import Error404 from "./Dev/Contexts/Error";
+import ErrorBoundary from "./Dev/Contexts/ErrorBoundary";
+import AuthPage from "./Dev/Auth/AuthPage";
+import Homepage from "./Dev/Homepage";
+import Livepage from "./Dev/Livepage";
 
 function App() {
   return (
-    <Error404>
+    <ErrorBoundary>
       <Routes>
         <Route path="/">
-          <Route index element={<Error404 />} />
+          <Route index element={<Homepage />} />
+          <Route path="live" element={<Livepage />} />
+          <Route path="userauth" element={<AuthPage />} />
         </Route>
       </Routes>
-    </Error404>
+    </ErrorBoundary>
   );
 }
 
