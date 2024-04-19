@@ -9,7 +9,7 @@ import {
 
 const Footer = () => {
   return (
-    <footer className="flex justify-evenly items-center font-normal">
+    <footer className="flex flex-col sm:flex-row gap-4 sm:gap-0 justify-evenly items-center font-normal">
       <div>
         <p className="text-xs md:text-sm">
           &#169; Copyright 2024 GNSSMetrics.com

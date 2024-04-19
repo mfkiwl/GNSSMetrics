@@ -9,7 +9,9 @@ const Navbar = () => {
         className={({ isActive, isPending, isTransitioning }) =>
           [
             isPending ? `` : ``,
-            isActive ? `font-bold text-green-600` : `font-normal`,
+            isActive
+              ? `h-fit w-fit px-6 py-3 border bg-blue-400 rounded-full text-white transition duration-300 ease-in-out hover:bg-blue-500`
+              : `font-normal`,
             isTransitioning ? `` : ``,
           ].join(" ")
         }
@@ -21,7 +23,9 @@ const Navbar = () => {
         className={({ isActive, isPending, isTransitioning }) =>
           [
             isPending ? `` : ``,
-            isActive ? `font-bold text-green-600` : `font-normal`,
+            isActive
+              ? `h-fit w-fit px-6 py-3 border bg-blue-400 rounded-full text-white transition duration-300 ease-in-out hover:bg-blue-500`
+              : `font-normal`,
             isTransitioning ? `` : ``,
           ].join(" ")
         }

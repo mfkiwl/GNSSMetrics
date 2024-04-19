@@ -15,7 +15,7 @@ const Header = () => {
       </button>
       <div className="flex gap-2">
         <button>
-          <RiGpsFill size={35} />
+          <RiGpsFill size={35} color="black" />
         </button>
         <div>
           <Name />
@@ -27,7 +27,9 @@ const Header = () => {
       <div className="flex gap-4">
         <IoSettings size={20} />
         <FaRegCircleUser size={20} />
-        <FaRegQuestionCircle size={20} />
+        <button>
+          <FaRegQuestionCircle size={20} />
+        </button>
       </div>
     </div>
   );
