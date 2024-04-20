@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import Papa from "papaparse";
+import { read, utils } from "xlsx";
 import step_1_with_altitude from "../../Screenshots/Step 1 - Coordinates and Altitude.png";
 import step_1_without_altitude from "../../Screenshots/Step 1 - Coordinates only.png";
 import step_2_with_altitude from "../../Screenshots/Step 2 - with Altitude.png";
@@ -42,8 +44,33 @@ const FromFile = () => {
         const fileType = selectedFile.name.split(".").pop().toLowerCase();
         // Set file type state
         setFileType(fileType);
+        const reader = new FileReader(); // Create a new FileReader object
+        // Callback function executed when the FileReader finishes reading the file
+        reader.onload = (event) => {
+          const fileContents = event.target.result; // Get the contents of the file
+          // Parse and log file content to console
+          if (selectedFile.name.endsWith(".csv")) {
+            const data = Papa.parse(fileContents, {
+              header: true,
+            });
+            console.log(data);
+          } else if (selectedFile.name.endsWith(".xlsx")) {
+            const wb = read(fileContents, { type: "binary" });
+            const sheet = wb.Sheets[wb.SheetNames[0]];
+            const csvData = utils.sheet_to_csv(sheet);
+            const data = Papa.parse(csvData, {
+              header: true,
+            });
+            console.log(data);
+          }
+        };
+
+        // Read the file as text
+        reader.readAsBinaryString(selectedFile);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error handling file change:", error);
+    }
   };
 
   // Function to check file name and type
@@ -56,7 +83,7 @@ const FromFile = () => {
         (fileType === "xlsx" && fileName.length > 4) ||
         (fileType === "csv" && fileName.length > 4)
       ) {
-        console.log("File title:", fileName);
+        // console.log("File title:", fileName);
       } else {
         console.error(
           "Invalid file type. Please upload an Excel (.xlsx) or CSV (.csv) file."
@@ -69,7 +96,7 @@ const FromFile = () => {
   fileNameChecker();
 
   // Console log state variables for debugging
-  console.log(file, fileName, fileType, refLat, refLong, refAlt);
+  // console.log(file, fileName, fileType, refLat, refLong, refAlt);
 
   return (
     <div className="flex flex-col text-center justify-start h-full">
@@ -167,7 +194,7 @@ const FromFile = () => {
                 className={"hidden"}
               />
               <h3 className="mb-0 text-sm sm:text-md text-green-800">
-                File title: {fileName}
+                {fileName}
               </h3>
             </form>
             <div className="flex flex-col items-center justify-center w-full mb-4 sm:mb-8">
