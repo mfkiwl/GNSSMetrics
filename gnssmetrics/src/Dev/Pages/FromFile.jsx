@@ -5,6 +5,8 @@ import step_1_with_altitude from "../../Screenshots/Step 1 - Coordinates and Alt
 import step_1_without_altitude from "../../Screenshots/Step 1 - Coordinates only.png";
 import step_2_with_altitude from "../../Screenshots/Step 2 - with Altitude.png";
 import step_2_without_altitude from "../../Screenshots/Step 2 - without Altitude.png";
+import DataTable from "../Components/Visualizers/DataTable";
+import DataMap from "../Components/Visualizers/DataMap";
 
 const FromFile = () => {
   // State variables
@@ -36,8 +38,6 @@ const FromFile = () => {
       if (event.target.files) {
         // Get selected file
         const selectedFile = event.target.files[0];
-        // Set file state
-        setFile(selectedFile);
         // Set file name state
         setFileName(selectedFile.name);
         // Get file type
@@ -53,7 +53,8 @@ const FromFile = () => {
             const data = Papa.parse(fileContents, {
               header: true,
             });
-            console.log(data);
+            // console.log(data);
+            setFile(data);
           } else if (selectedFile.name.endsWith(".xlsx")) {
             const wb = read(fileContents, { type: "binary" });
             const sheet = wb.Sheets[wb.SheetNames[0]];
@@ -61,7 +62,8 @@ const FromFile = () => {
             const data = Papa.parse(csvData, {
               header: true,
             });
-            console.log(data);
+            // console.log(data);
+            setFile(data);
           }
         };
 
@@ -90,6 +92,14 @@ const FromFile = () => {
         );
       }
     } catch (error) {}
+  };
+
+  const fileCheckRender = () => {
+    if (fileType === undefined || fileType === "csv" || fileType === "xlsx") {
+      return fileName;
+    } else {
+      return "Please upload a csv or xlsx file";
+    }
   };
 
   // Check file type
@@ -194,7 +204,7 @@ const FromFile = () => {
                 className={"hidden"}
               />
               <h3 className="mb-0 text-sm sm:text-md text-green-800">
-                {fileName}
+                {fileCheckRender()}
               </h3>
             </form>
             <div className="flex flex-col items-center justify-center w-full mb-4 sm:mb-8">
@@ -208,24 +218,39 @@ const FromFile = () => {
                 </p>
                 <div className="flex flex-col gap-4 items-center justify-center">
                   <div className="flex flex-col sm:flex-row items-center justify-center sm:gap-6">
-                    <input
-                      type="number"
-                      placeholder="Latitude (-90° to 90°)"
-                      className="border px-2 py-2 rounded-xl text-green-800 mb-4"
-                      onChange={handleLatValue}
-                    />
-                    <input
-                      type="number"
-                      placeholder="Longitude (-180° to 180°)"
-                      className="border px-2 py-2 rounded-xl text-green-800 mb-4"
-                      onChange={handleLongValue}
-                    />
-                    <input
-                      type="number"
-                      placeholder="Altitude (optional)"
-                      className="border px-2 py-2 rounded-xl text-green-800 mb-4"
-                      onChange={handleAltValue}
-                    />
+                    <div>
+                      <label className="pe-4 sm:pe-0 text-start mb-2 text-sm sm:text-md text-gray-600">
+                        Latitude:{" "}
+                      </label>
+                      <input
+                        type="number"
+                        placeholder="-90°<latitude<90°"
+                        className="border px-2 py-2 rounded-xl text-green-800 mb-4"
+                        onChange={handleLatValue}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-start mb-2 text-sm sm:text-md text-gray-600 pe-1 sm:pe-0">
+                        Longitude:{" "}
+                      </label>
+                      <input
+                        type="number"
+                        placeholder="-180°<longitude<180°"
+                        className="border px-2 py-2 rounded-xl text-green-800 mb-4"
+                        onChange={handleLongValue}
+                      />
+                    </div>
+                    <div className="">
+                      <label className="text-start text-sm sm:text-md text-gray-600 pe-4 sm:pe-0">
+                        Altitude:{" "}
+                      </label>{" "}
+                      <input
+                        type="number"
+                        placeholder="-500m<alt<10000m"
+                        className="border px-2 py-2 rounded-xl text-green-800 mb-4"
+                        onChange={handleAltValue}
+                      />
+                    </div>
                   </div>
                   <div>
                     <button className="h-fit w-fit px-6 py-3 border bg-blue-600 rounded-full text-white transition duration-300 ease-in-out hover:bg-blue-500 mt-0">
@@ -236,6 +261,14 @@ const FromFile = () => {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+      <div className="flex flex-col sm:flex-row w-full rounded-lg text-center gap-4 sm:gap-8  ">
+        <div className="max-w-full max-h-[350px] sm:max-h-[500px] overflow-auto">
+          <DataTable file={file} />
+        </div>
+        <div>
+          <DataMap file={file} />
         </div>
       </div>
     </div>
