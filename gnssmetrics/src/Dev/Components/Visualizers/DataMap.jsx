@@ -1,44 +1,62 @@
-import React, { useEffect } from "react";
-import mapboxgl from "mapbox-gl";
-import MapboxGeocoder from "mapbox/mapbox-gl-geocoder";
+import React, { useEffect, useState } from "react";
+import GoogleMapReact from "google-map-react";
+
+const AnyReactComponent = ({ text }) => (
+  <div className="text-2 text-red-700">{text}</div>
+); // Simple marker component
 
 const DataMap = (file) => {
-  const dataMapRender = () => {
+  const [markers, setMarkers] = useState([]);
+
+  useEffect(() => {
     if (file.file) {
-      console.log("File:", file.file);
-      mapboxgl.accessToken = "YOUR_MAPBOX_ACCESS_TOKEN"; // Replace with your Mapbox access token
+      setMarkers(
+        file.file.data.map((item, index) => ({
+          id: index, // Unique identifier for each marker
+          lat: parseFloat(item.Latitude),
+          lng: parseFloat(item.Longitude),
+        }))
+      );
+    }
+  }, [file.file]);
 
-      const map = new mapboxgl.Map({
-        container: "map",
-        style: "mapbox://styles/mapbox/streets-v11", // You can use any Mapbox style
-        center: [0, 0], // Initial center coordinates
-        zoom: 1, // Initial zoom level
-      });
+  const handleApiLoaded = (map, maps) => {
+    // You can use map and maps objects here if needed
+  };
 
-      // Add navigation control (zoom, pan)
-      map.addControl(new mapboxgl.NavigationControl());
+  const defaultProps = {
+    center: { lat: 51.1234561, lng: -114.1234561 },
+    zoom: 11,
+  };
 
-      // Iterate through the data array and add markers to the map
-      file.file.forEach((item) => {
-        new mapboxgl.Marker()
-          .setLngLat([item.longitude, item.latitude])
-          .addTo(map);
-      });
-
-      // Add search bar functionality
-      const geocoder = new MapboxGeocoder({
-        accessToken: mapboxgl.accessToken,
-        mapboxgl: mapboxgl,
-      });
-
-      map.addControl(geocoder);
-
-      return () => map.remove();
-    } else {
+  const markerRender = () => {
+    if (markers.length > 1) {
+      return (
+        <div className="h-96 w-96 border border-gray-300 rounded-lg overflow-hidden">
+          <GoogleMapReact
+            bootstrapURLKeys={{
+              key: "AIzaSyCcjwHXWO4tulcy-kvMG1WVoA9Vp9reLxM",
+            }}
+            defaultCenter={defaultProps.center}
+            defaultZoom={defaultProps.zoom}
+            yesIWantToUseGoogleMapApiInternals
+            onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
+          >
+            {markers.map((marker, index) => (
+              <AnyReactComponent
+                key={index}
+                lat={marker.lat}
+                lng={marker.lng}
+                text={marker.id}
+              />
+            ))}
+          </GoogleMapReact>
+        </div>
+      );
     }
   };
 
-  return <div>{dataMapRender()}</div>;
+  return markerRender();
 };
 
 export default DataMap;

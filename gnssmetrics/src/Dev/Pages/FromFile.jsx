@@ -16,6 +16,7 @@ const FromFile = () => {
   const [refLat, setRefLat] = useState();
   const [refLong, setRefLong] = useState();
   const [refAlt, setRefAlt] = useState();
+  const [refresh, setRefresh] = useState(false);
 
   // Function to handle latitude input
   const handleLatValue = (event) => {
@@ -253,7 +254,7 @@ const FromFile = () => {
                     </div>
                   </div>
                   <div>
-                    <button className="h-fit w-fit px-6 py-3 border bg-blue-600 rounded-full text-white transition duration-300 ease-in-out hover:bg-blue-500 mt-0">
+                    <button className="h-fit w-fit px-6 py-3 border bg-blue-600 rounded-full text-white transition duration-300 ease-in-out hover:bg-blue-500">
                       Start Analysis...
                     </button>
                   </div>
@@ -263,12 +264,12 @@ const FromFile = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col sm:flex-row w-full rounded-lg text-center gap-4 sm:gap-8  ">
-        <div className="max-w-full max-h-[350px] sm:max-h-[500px] overflow-auto">
+      <div className="flex flex-col sm:flex-row w-full rounded-lg text-center justify-center items-center gap-4 sm:gap-8  ">
+        <div className="max-w-full max-h-96 rounded-lg overflow-auto">
           <DataTable file={file} />
         </div>
-        <div>
-          <DataMap file={file} />
+        <div className="max-w-full max-h-96 rounded-lg">
+          <DataMap file={file} refresh={refresh} setRefresh={setRefresh} />
         </div>
       </div>
     </div>
