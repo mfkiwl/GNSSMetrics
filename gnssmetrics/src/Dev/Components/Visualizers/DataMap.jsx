@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import GoogleMapReact from "google-map-react";
 
 const AnyReactComponent = ({ text }) => (
@@ -7,6 +7,8 @@ const AnyReactComponent = ({ text }) => (
 
 const DataMap = (file) => {
   const [markers, setMarkers] = useState([]);
+
+  const mapRef = useRef();
 
   useEffect(() => {
     if (file.file) {
@@ -20,13 +22,14 @@ const DataMap = (file) => {
     }
   }, [file.file]);
 
-  const handleApiLoaded = (map, maps) => {
-    // You can use map and maps objects here if needed
-  };
+  //   const handleApiLoaded = (map, maps) => {
+  //     // You can use map and maps objects here if needed
+  //     handleApiLoaded(map, maps);
+  //   };
 
   const defaultProps = {
-    center: { lat: 51.1234561, lng: -114.1234561 },
-    zoom: 11,
+    center: { lat: 51.0447, lng: -114.0719 },
+    zoom: 10,
   };
 
   const markerRender = () => {
@@ -35,12 +38,21 @@ const DataMap = (file) => {
         <div className="h-96 w-96 border border-gray-300 rounded-lg overflow-hidden">
           <GoogleMapReact
             bootstrapURLKeys={{
-              key: "AIzaSyCcjwHXWO4tulcy-kvMG1WVoA9Vp9reLxM",
+              key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
             }}
             defaultCenter={defaultProps.center}
             defaultZoom={defaultProps.zoom}
+            options={{
+              zoomControl: false,
+              fullscreenControl: false,
+              panControl: false,
+              draggable: false,
+              zoom: false,
+            }}
             yesIWantToUseGoogleMapApiInternals
-            onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
+            onGoogleApiLoaded={({ map, maps }) => {
+              mapRef.current = map;
+            }}
           >
             {markers.map((marker, index) => (
               <AnyReactComponent
