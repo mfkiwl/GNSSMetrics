@@ -13,7 +13,6 @@
     "axios": "^1.6.8",
     "dotenv": "^16.4.5",
     "google-map-react": "^2.2.1",
-    "googlemaps": "^1.12.0",
     "mapbox": "^1.0.0-beta10",
     "mapbox-gl": "^3.3.0",
     "papaparse": "^5.4.1",

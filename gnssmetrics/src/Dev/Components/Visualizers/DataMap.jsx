@@ -1,12 +1,18 @@
 import React, { useEffect, useState, useRef } from "react";
 import GoogleMapReact from "google-map-react";
+import { IoLocation } from "react-icons/io5";
 
 const AnyReactComponent = ({ text }) => (
-  <div className="text-2 text-red-700">{text}</div>
+  <div className="text-2 text-red-700">
+    <IoLocation />
+    <p>{text}</p>
+  </div>
 ); // Simple marker component
 
 const DataMap = (file) => {
   const [markers, setMarkers] = useState([]);
+  const [defLat, setDefLat] = useState(51.0447);
+  const [defLong, setDefLong] = useState(-114.0719);
 
   const mapRef = useRef();
 
@@ -19,6 +25,8 @@ const DataMap = (file) => {
           lng: parseFloat(item.Longitude),
         }))
       );
+      setDefLat(file.file.data[0].Latitude);
+      setDefLong(file.file.data[0].Longitude);
     }
   }, [file.file]);
 
@@ -28,7 +36,7 @@ const DataMap = (file) => {
   //   };
 
   const defaultProps = {
-    center: { lat: 51.0447, lng: -114.0719 },
+    center: { lat: defLat, lng: defLong },
     zoom: 10,
   };
 
@@ -38,7 +46,7 @@ const DataMap = (file) => {
         <div className="h-96 w-96 border border-gray-300 rounded-lg overflow-hidden">
           <GoogleMapReact
             bootstrapURLKeys={{
-              key: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+              key: "AIzaSyCcjwHXWO4tulcy-kvMG1WVoA9Vp9reLxM",
             }}
             defaultCenter={defaultProps.center}
             defaultZoom={defaultProps.zoom}

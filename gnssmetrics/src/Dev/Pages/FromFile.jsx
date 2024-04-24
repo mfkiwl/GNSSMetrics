@@ -16,7 +16,7 @@ const FromFile = () => {
   const [refLat, setRefLat] = useState();
   const [refLong, setRefLong] = useState();
   const [refAlt, setRefAlt] = useState();
-  const [refresh, setRefresh] = useState(false);
+  // const [refresh, setRefresh] = useState(false);
 
   // Function to handle latitude input
   const handleLatValue = (event) => {
@@ -269,7 +269,7 @@ const FromFile = () => {
           <DataTable file={file} />
         </div>
         <div className="max-w-full max-h-96 rounded-lg">
-          <DataMap file={file} refresh={refresh} setRefresh={setRefresh} />
+          <DataMap file={file} />
         </div>
       </div>
     </div>
