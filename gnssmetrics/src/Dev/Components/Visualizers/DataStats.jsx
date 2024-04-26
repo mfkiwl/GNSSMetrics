@@ -5,26 +5,39 @@ const DataStats = (props) => {
 
   const [markers, setMarkers] = useState([]);
   const [distances, setDistances] = useState([]);
-
+  const [cep50, setCep50] = useState();
+  const [cep90, setCep90] = useState();
+  const [cep98, setCep98] = useState();
+  const [meanCep50, setMeanCep50] = useState();
+  const [meanCep90, setMeanCep90] = useState();
+  const [meanCep98, setMeanCep98] = useState();
   const extractMarkers = () => {
-    if (file === undefined) {
-      //   console.log("File is undefined");
-    } else {
-      //   console.log("File is defined");
-      setMarkers(
-        file.data.map((item, index) => ({
-          id: index, // Unique identifier for each marker
-          lat: parseFloat(item.Latitude),
-          lng: parseFloat(item.Longitude),
-          alt: parseFloat(item.Altitude),
-        }))
-      );
+    try {
+      if (file === undefined) {
+        // File is not defined
+      } else {
+        // File is defined, extract markers
+        setMarkers(
+          file.data.map((item, index) => ({
+            id: index,
+            lat: parseFloat(item.Latitude),
+            lng: parseFloat(item.Longitude),
+            alt: parseFloat(item.Altitude),
+          }))
+        );
+      }
+    } catch (error) {
+      console.error("Error occurred while extracting markers:", error);
     }
   };
 
   useEffect(() => {
-    extractMarkers();
-    calcDistances();
+    try {
+      extractMarkers();
+      calcStats();
+    } catch (error) {
+      console.error("Error occurred while calculating stats:", error);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     file.data,
@@ -34,50 +47,102 @@ const DataStats = (props) => {
     startButton,
     markers.length,
     distances.length,
+    cep50,
+    cep90,
+    cep98,
   ]);
 
-  // Calc distances
-
   const calcDistance = (lat1, lon1, lat2, lon2) => {
-    const earthRadius = 6371 * 1000; // Earth's radius in meters
+    try {
+      const earthRadius = 6371 * 1000; // Earth's radius in meters
 
-    // Convert latitude and longitude differences to radians
-    const latDiffRad = (lat2 - lat1) * (Math.PI / 180);
-    const lonDiffRad = (lon2 - lon1) * (Math.PI / 180);
+      const toRadians = (degrees) => {
+        return degrees * (Math.PI / 180);
+      };
 
-    // Haversine formula
-    const a =
-      Math.sin(latDiffRad / 2) ** 2 +
-      Math.cos(lat1 * (Math.PI / 180)) *
-        Math.cos(lat2 * (Math.PI / 180)) *
-        Math.sin(lonDiffRad / 2) ** 2;
+      const latDiffRad = toRadians(lat2 - lat1);
+      const lonDiffRad = toRadians(lon2 - lon1);
 
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      const a =
+        Math.sin(latDiffRad / 2) ** 2 +
+        Math.cos(toRadians(lat1)) *
+          Math.cos(toRadians(lat2)) *
+          Math.sin(lonDiffRad / 2) ** 2;
 
-    const distance = earthRadius * c;
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-    return distance.toFixed(2); // Return distance rounded to 2 decimal places
+      const distance = earthRadius * c;
+
+      return distance.toFixed(2);
+    } catch (error) {
+      console.error("Error occurred while calculating distance:", error);
+      return "";
+    }
   };
 
-  // Calc all fix errors wrt ref coordinates
-  const calcDistances = () => {
-    if (markers.length > 1) {
-      const distances = markers.map((data, index) => {
-        const id = data.id;
-        const lat = data.lat;
-        const long = data.lng;
-        const alt = data.alt;
-        const distance = parseFloat(calcDistance(refLat, refLong, lat, long));
-        return distance;
-      });
-      //   console.log(distances);
-      setDistances(distances);
+  const calcStats = () => {
+    try {
+      if (markers.length > 1) {
+        const fixErrors = markers.map((data) => {
+          const { lat, lng } = data;
+          const fixError = parseFloat(calcDistance(refLat, refLong, lat, lng));
+          return fixError;
+        });
+        setDistances(fixErrors);
+        console.log(fixErrors);
+
+        const sortedDistances = distances.sort((a, b) => a - b);
+        const cep50Index = Math.floor(sortedDistances.length * 0.5);
+        const cep90Index = Math.floor(sortedDistances.length * 0.9);
+        const cep98Index = Math.floor(sortedDistances.length * 0.98);
+
+        setCep50(sortedDistances[cep50Index]);
+        setCep90(sortedDistances[cep90Index]);
+        setCep98(sortedDistances[cep98Index]);
+
+        const mean =
+          distances.reduce((sum, distance) => sum + distance, 0) /
+          distances.length;
+        const squaredDistances = distances.map(
+          (distance) => (distance - mean) ** 2
+        );
+
+        const sortedSquaredDistances = squaredDistances.sort((a, b) => a - b);
+        const meanCep50Index = Math.floor(sortedSquaredDistances.length * 0.5);
+        const meanCep90Index = Math.floor(sortedSquaredDistances.length * 0.9);
+        const meanCep98Index = Math.floor(sortedSquaredDistances.length * 0.98);
+
+        const meanCep50 = Math.sqrt(sortedSquaredDistances[meanCep50Index]);
+        const meanCep90 = Math.sqrt(sortedSquaredDistances[meanCep90Index]);
+        const meanCep98 = Math.sqrt(sortedSquaredDistances[meanCep98Index]);
+
+        setMeanCep50(meanCep50.toFixed(2));
+        setMeanCep90(meanCep90.toFixed(2));
+        setMeanCep98(meanCep98.toFixed(2));
+      }
+    } catch (error) {
+      console.error("Error occurred while calculating stats:", error);
     }
   };
 
   const statsRender = () => {
-    if (markers.length > 1) {
-      return <div>Distance: {distances}</div>;
+    try {
+      if (markers.length > 1) {
+        return (
+          <div>
+            <div>Distance: {distances}</div>
+            <div>CEP50: {cep50}</div>
+            <div>CEP90: {cep90}</div>
+            <div>CEP98: {cep98}</div>
+            <div>Mean CEP50: {meanCep50}</div>
+            <div>Mean CEP90: {meanCep90}</div>
+            <div>Mean CEP98: {meanCep98}</div>
+          </div>
+        );
+      }
+    } catch (error) {
+      console.error("Error occurred while rendering stats:", error);
+      return null;
     }
   };
 
