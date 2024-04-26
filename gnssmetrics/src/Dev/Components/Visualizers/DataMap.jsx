@@ -11,8 +11,8 @@ const AnyReactComponent = ({ text }) => (
 
 const DataMap = (file) => {
   const [markers, setMarkers] = useState([]);
-  const [defLat, setDefLat] = useState(51.0447);
-  const [defLong, setDefLong] = useState(-114.0719);
+  // const [defLat, setDefLat] = useState(51.0447);
+  // const [defLong, setDefLong] = useState(-114.0719);
 
   const mapRef = useRef();
 
@@ -25,8 +25,8 @@ const DataMap = (file) => {
           lng: parseFloat(item.Longitude),
         }))
       );
-      setDefLat(file.file.data[0].Latitude);
-      setDefLong(file.file.data[0].Longitude);
+      // setDefLat(file.file.data[0].Latitude);
+      // setDefLong(file.file.data[0].Longitude);
     }
   }, [file.file]);
 
@@ -36,7 +36,7 @@ const DataMap = (file) => {
   //   };
 
   const defaultProps = {
-    center: { lat: defLat, lng: defLong },
+    center: { lat: 51.0447, lng: -114.0719 },
     zoom: 10,
   };
 

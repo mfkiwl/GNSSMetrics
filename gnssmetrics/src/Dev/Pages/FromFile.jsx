@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Papa from "papaparse";
 import { read, utils } from "xlsx";
 import step_1_with_altitude from "../../Screenshots/Step 1 - Coordinates and Altitude.png";
@@ -7,6 +7,8 @@ import step_2_with_altitude from "../../Screenshots/Step 2 - with Altitude.png";
 import step_2_without_altitude from "../../Screenshots/Step 2 - without Altitude.png";
 import DataTable from "../Components/Visualizers/DataTable";
 import DataMap from "../Components/Visualizers/DataMap";
+import DataStats from "../Components/Visualizers/DataStats";
+import DataPlot from "../Components/Visualizers/DataPlot";
 
 const FromFile = () => {
   // State variables
@@ -16,7 +18,9 @@ const FromFile = () => {
   const [refLat, setRefLat] = useState();
   const [refLong, setRefLong] = useState();
   const [refAlt, setRefAlt] = useState();
-  // const [refresh, setRefresh] = useState(false);
+  const [startButton, setStartButton] = useState(false);
+
+  // console.log(file, fileName, fileType, refLat, refLong, refAlt, distances);
 
   // Function to handle latitude input
   const handleLatValue = (event) => {
@@ -103,8 +107,35 @@ const FromFile = () => {
     }
   };
 
+  const handleStartAnalysisButton = () => {
+    setStartButton(true);
+  };
+
+  const statsAndPlotsRender = () => {
+    if (startButton) {
+      return (
+        <div className="flex flex-col sm:flex-row w-full rounded-lg text-center justify-center items-center gap-4 sm:gap-8  ">
+          <div className="max-w-full max-h-full rounded-lg overflow-auto">
+            <DataStats
+              file={file}
+              refLat={refLat}
+              refLong={refLong}
+              refAlt={refAlt}
+              startButton={startButton}
+            />
+          </div>
+          <div className="max-w-full max-h-full rounded-lg">
+            <DataPlot file={file} />
+          </div>
+        </div>
+      );
+    }
+  };
+
   // Check file type
   fileNameChecker();
+
+  useEffect(() => {}, [refLat, refLong, refAlt, startButton]);
 
   // Console log state variables for debugging
   // console.log(file, fileName, fileType, refLat, refLong, refAlt);
@@ -254,7 +285,10 @@ const FromFile = () => {
                     </div>
                   </div>
                   <div>
-                    <button className="h-fit w-fit px-6 py-3 border bg-blue-600 rounded-full text-white transition duration-300 ease-in-out hover:bg-blue-500">
+                    <button
+                      onClick={handleStartAnalysisButton}
+                      className="h-fit w-fit px-6 py-3 border bg-blue-600 rounded-full text-white transition duration-300 ease-in-out hover:bg-blue-500"
+                    >
                       Start Analysis...
                     </button>
                   </div>
@@ -272,6 +306,7 @@ const FromFile = () => {
           <DataMap file={file} />
         </div>
       </div>
+      <div>{statsAndPlotsRender()}</div>
     </div>
   );
 };
