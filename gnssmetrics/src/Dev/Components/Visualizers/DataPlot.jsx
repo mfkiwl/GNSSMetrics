@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
-const DataPlot = (props) => {
-  const { file, distances } = props;
-  //   console.log(file, distances);
-  return <div></div>;
+const DataPlot = (plotData) => {
+  console.log(plotData);
+  return <div>insert plot here</div>;
 };
 
 export default DataPlot;

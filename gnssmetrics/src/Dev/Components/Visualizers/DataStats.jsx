@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 const DataStats = (props) => {
-  const { file, refLat, refLong, refAlt, startButton } = props;
+  const { file, refLat, refLong, refAlt, startButton, setPlotData } = props;
 
   const [markers, setMarkers] = useState([]);
   const [distances, setDistances] = useState([]);
@@ -11,6 +11,7 @@ const DataStats = (props) => {
   const [meanCep50, setMeanCep50] = useState();
   const [meanCep90, setMeanCep90] = useState();
   const [meanCep98, setMeanCep98] = useState();
+
   const extractMarkers = () => {
     try {
       if (file === undefined) {
@@ -89,7 +90,8 @@ const DataStats = (props) => {
           return fixError;
         });
         setDistances(fixErrors);
-        console.log(fixErrors);
+        setPlotData(fixErrors);
+        // console.log(fixErrors);
 
         const sortedDistances = distances.sort((a, b) => a - b);
         const cep50Index = Math.floor(sortedDistances.length * 0.5);
@@ -129,15 +131,80 @@ const DataStats = (props) => {
     try {
       if (markers.length > 1) {
         return (
-          <div>
-            <div>Distance: {distances}</div>
-            <div>CEP50: {cep50}</div>
-            <div>CEP90: {cep90}</div>
-            <div>CEP98: {cep98}</div>
-            <div>Mean CEP50: {meanCep50}</div>
-            <div>Mean CEP90: {meanCep90}</div>
-            <div>Mean CEP98: {meanCep98}</div>
-          </div>
+          <table className="divide-y divide-gray-200">
+            <thead className="bg-gray-200">
+              <tr>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-sm text-gray-600 uppercase tracking-wider"
+                >
+                  Statistics
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-sm text-gray-600 uppercase tracking-wider"
+                >
+                  Value
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white text-xs divide-y divide-gray-200">
+              <tr className="bg-gray-50">
+                <td className="px-6 py-4 whitespace-nowrap">Number of fixes</td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {distances.length}
+                </td>
+              </tr>
+              <tr>
+                <td className="px-6 py-4 whitespace-nowrap">Max Fix Error</td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {Math.max(...distances)} m
+                </td>
+              </tr>
+              <tr className="bg-gray-50">
+                <td className="px-6 py-4 whitespace-nowrap">Min Fix Error</td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {Math.min(...distances)} m
+                </td>
+              </tr>
+              <tr>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  Average Fix Error
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {(
+                    distances.reduce((acc, val) => acc + val, 0) /
+                    distances.length
+                  ).toFixed(2)}{" "}
+                  m
+                </td>
+              </tr>
+              <tr className="bg-gray-50">
+                <td className="px-6 py-4 whitespace-nowrap">CEP 50%</td>
+                <td className="px-6 py-4 whitespace-nowrap">{cep50} m</td>
+              </tr>
+              <tr>
+                <td className="px-6 py-4 whitespace-nowrap">CEP 90%</td>
+                <td className="px-6 py-4 whitespace-nowrap">{cep90} m</td>
+              </tr>
+              <tr className="bg-gray-50">
+                <td className="px-6 py-4 whitespace-nowrap">CEP 98%</td>
+                <td className="px-6 py-4 whitespace-nowrap">{cep98} m</td>
+              </tr>
+              <tr>
+                <td className="px-6 py-4 whitespace-nowrap">Mean CEP 50%</td>
+                <td className="px-6 py-4 whitespace-nowrap">{meanCep50} m</td>
+              </tr>
+              <tr className="bg-gray-50">
+                <td className="px-6 py-4 whitespace-nowrap">Mean CEP 90%</td>
+                <td className="px-6 py-4 whitespace-nowrap">{meanCep90} m</td>
+              </tr>
+              <tr>
+                <td className="px-6 py-4 whitespace-nowrap">Mean CEP 98%</td>
+                <td className="px-6 py-4 whitespace-nowrap">{meanCep98} m</td>
+              </tr>
+            </tbody>
+          </table>
         );
       }
     } catch (error) {
@@ -146,7 +213,7 @@ const DataStats = (props) => {
     }
   };
 
-  console.log(markers, refLat, refLong, refAlt, distances, startButton);
+  //   console.log(markers, refLat, refLong, refAlt, distances, startButton);
 
   return statsRender();
 };

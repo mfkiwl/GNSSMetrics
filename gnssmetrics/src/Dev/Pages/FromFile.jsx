@@ -19,6 +19,7 @@ const FromFile = () => {
   const [refLong, setRefLong] = useState();
   const [refAlt, setRefAlt] = useState();
   const [startButton, setStartButton] = useState(false);
+  const [plotData, setPlotData] = useState([]);
 
   // console.log(file, fileName, fileType, refLat, refLong, refAlt, distances);
 
@@ -114,18 +115,19 @@ const FromFile = () => {
   const statsAndPlotsRender = () => {
     if (startButton) {
       return (
-        <div className="flex flex-col sm:flex-row w-full rounded-lg text-center justify-center items-center gap-4 sm:gap-8  ">
-          <div className="max-w-full max-h-full rounded-lg overflow-auto">
+        <div className="flex flex-col sm:flex-row w-full rounded-lg text-center justify-center items-center sm:ps-[4vw] gap-4 sm:gap-8 mb-4 sm:mb-8 ">
+          <div className="max-w-full sm:w-1/3 max-h-full rounded-lg overflow-auto">
             <DataStats
               file={file}
               refLat={refLat}
               refLong={refLong}
               refAlt={refAlt}
               startButton={startButton}
+              setPlotData={setPlotData}
             />
           </div>
-          <div className="max-w-full max-h-full rounded-lg">
-            <DataPlot file={file} />
+          <div className="max-w-full sm:w-2/3 max-h-full rounded-lg">
+            <DataPlot plotData={plotData} />
           </div>
         </div>
       );
@@ -298,7 +300,7 @@ const FromFile = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col sm:flex-row w-full rounded-lg text-center justify-center items-center gap-4 sm:gap-8  ">
+      <div className="flex border border-2 flex-col sm:flex-row w-full rounded-lg text-center justify-center items-center gap-4 sm:gap-8 mb-4 sm:mb-8">
         <div className="max-w-full max-h-96 rounded-lg overflow-auto">
           <DataTable file={file} />
         </div>
@@ -306,7 +308,9 @@ const FromFile = () => {
           <DataMap file={file} />
         </div>
       </div>
-      <div>{statsAndPlotsRender()}</div>
+      <div className="w-full border border-2 rounded-lg justify-center items-center gap-4 sm:gap-8 mb-4 sm:mb-8 ">
+        {statsAndPlotsRender()}
+      </div>
     </div>
   );
 };
