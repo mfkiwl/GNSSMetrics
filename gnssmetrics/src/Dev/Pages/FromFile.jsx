@@ -3,8 +3,8 @@ import Papa from "papaparse";
 import { read, utils } from "xlsx";
 import step_1_with_altitude from "../../Screenshots/Step 1 - Coordinates and Altitude.png";
 import step_1_without_altitude from "../../Screenshots/Step 1 - Coordinates only.png";
-import step_2_with_altitude from "../../Screenshots/Step 2 - with Altitude.png";
-import step_2_without_altitude from "../../Screenshots/Step 2 - without Altitude.png";
+// import step_2_with_altitude from "../../Screenshots/Step 2 - with Altitude.png";
+// import step_2_without_altitude from "../../Screenshots/Step 2 - without Altitude.png";
 import DataTable from "../Components/Visualizers/DataTable";
 import DataMap from "../Components/Visualizers/DataMap";
 import DataStats from "../Components/Visualizers/DataStats";
@@ -112,11 +112,13 @@ const FromFile = () => {
     setStartButton(true);
   };
 
+  // console.log(plotData);
+
   const statsAndPlotsRender = () => {
     if (startButton) {
       return (
-        <div className="flex flex-col sm:flex-row w-full rounded-lg text-center justify-center items-center sm:ps-[4vw] gap-4 sm:gap-8 mb-4 sm:mb-8 ">
-          <div className="max-w-full sm:w-1/3 max-h-full rounded-lg overflow-auto">
+        <div className="flex flex-col sm:flex-row w-full rounded-lg text-center justify-center items-center gap-4 sm:gap-8 mb-4 sm:mb-8 ">
+          <div className="max-w-full sm:w-1/3 max-h-96 rounded-lg overflow-auto sm:flex sm:justify-end">
             <DataStats
               file={file}
               refLat={refLat}
@@ -126,7 +128,7 @@ const FromFile = () => {
               setPlotData={setPlotData}
             />
           </div>
-          <div className="max-w-full sm:w-2/3 max-h-full rounded-lg">
+          <div className="max-w-full sm:w-2/3 max-h-96 rounded-lg">
             <DataPlot plotData={plotData} />
           </div>
         </div>
@@ -161,7 +163,7 @@ const FromFile = () => {
               <div className="text-start">
                 <p className="mb-4 text-sm sm:text-md text-gray-600">
                   Follow the spreadsheet format shown below for accurate
-                  analysis of coordinate sets.
+                  analysis of coordinate datasets.
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4 sm:gap-8">
@@ -172,7 +174,7 @@ const FromFile = () => {
                     className="mb-2"
                   />
                   <p className="mb-4 text-sm sm:text-md text-gray-600">
-                    Image 1a: File template for single dataset with "Altitude"
+                    Image 1a: File template for dataset with "Altitude" values
                   </p>
                 </div>
                 <div>
@@ -182,8 +184,8 @@ const FromFile = () => {
                     className="mb-2"
                   />
                   <p className="mb-4 text-sm sm:text-md text-gray-600">
-                    Image 1b: File template for single dataset without
-                    "Altitude"
+                    Image 1b: File template for dataset without "Altitude"
+                    values
                   </p>
                 </div>
               </div>
@@ -193,13 +195,12 @@ const FromFile = () => {
                 2
               </div>
               <div className="text-start">
-                <p className="mb-4 text-sm sm:text-md text-gray-600">
-                  For two or more datasets within the same file, replicate the
-                  formatting demonstrated below. Then, proceed to upload the
-                  file using the button provided.
+                <p className="text-sm sm:text-md text-gray-600">
+                  Save the spreadsheet as an excel (.xlsx) or comma seperated
+                  value (.csv) file and upload using the button below
                 </p>
               </div>
-              <div className="flex flex-col sm:flex-row gap-4 sm:gap-8">
+              {/* <div className="flex flex-col sm:flex-row gap-4 sm:gap-8">
                 <div>
                   <img
                     src={step_2_with_altitude}
@@ -221,7 +222,7 @@ const FromFile = () => {
                     "Altitude"
                   </p>
                 </div>
-              </div>
+              </div> */}
             </div>
             <form className="mb-8 flex flex-col sm:mb-8 cursor-pointer">
               <label
@@ -247,8 +248,8 @@ const FromFile = () => {
               </div>
               <div className="">
                 <p className="text-start mb-2 text-sm sm:text-md text-gray-600">
-                  Enter the test site's Latitude, Longitude, and Altitude
-                  (optional) below
+                  Enter the reference latitude, longitude, and altitude values
+                  below
                 </p>
                 <div className="flex flex-col gap-4 items-center justify-center">
                   <div className="flex flex-col sm:flex-row items-center justify-center sm:gap-6">
@@ -291,7 +292,7 @@ const FromFile = () => {
                       onClick={handleStartAnalysisButton}
                       className="h-fit w-fit px-6 py-3 border bg-blue-600 rounded-full text-white transition duration-300 ease-in-out hover:bg-blue-500"
                     >
-                      Start Analysis...
+                      Calculate Performance Statistics...
                     </button>
                   </div>
                 </div>
@@ -300,7 +301,7 @@ const FromFile = () => {
           </div>
         </div>
       </div>
-      <div className="flex border border-2 flex-col sm:flex-row w-full rounded-lg text-center justify-center items-center gap-4 sm:gap-8 mb-4 sm:mb-8">
+      <div className="flex flex-col sm:flex-row w-full rounded-lg text-center sm:justify-center gap-4 sm:gap-8 mb-4 sm:mb-8">
         <div className="max-w-full max-h-96 rounded-lg overflow-auto">
           <DataTable file={file} />
         </div>
@@ -308,9 +309,9 @@ const FromFile = () => {
           <DataMap file={file} />
         </div>
       </div>
-      <div className="w-full border border-2 rounded-lg justify-center items-center gap-4 sm:gap-8 mb-4 sm:mb-8 ">
-        {statsAndPlotsRender()}
-      </div>
+      {/* <div className="w-full border border-2 rounded-lg justify-center items-start gap-4 sm:gap-8 mb-4 sm:mb-8 "> */}
+      {statsAndPlotsRender()}
+      {/* </div> */}
     </div>
   );
 };
