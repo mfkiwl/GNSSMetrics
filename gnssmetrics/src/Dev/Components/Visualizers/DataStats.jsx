@@ -121,6 +121,10 @@ const DataStats = (props) => {
         setMeanCep50(meanCep50.toFixed(2));
         setMeanCep90(meanCep90.toFixed(2));
         setMeanCep98(meanCep98.toFixed(2));
+
+        if(markers.alt){
+          
+        }
       }
     } catch (error) {
       console.error("Error occurred while calculating stats:", error);
